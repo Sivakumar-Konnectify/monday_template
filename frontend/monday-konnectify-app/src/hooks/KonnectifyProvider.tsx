@@ -39,7 +39,6 @@ interface KonnectifyContextValue {
   templates: WorkflowTemplate[];
   metrics: DashboardMetrics | null;
   setupProgress: SetupProgress;
-  login: (domain: string, email: string, password: string) => Promise<void>;
   registerUser: (
     domain: string,
     email: string,
@@ -54,7 +53,6 @@ interface KonnectifyContextValue {
   refreshConnections: () => Promise<void>;
   refreshBilling: () => Promise<void>;
   refreshDashboard: () => Promise<void>;
-  refreshTemplates: () => Promise<void>;
   updateSetupProgress: (progress: Partial<SetupProgress>) => Promise<void>;
   ensureToken: () => Promise<string>;
   clearError: () => void;
@@ -83,16 +81,14 @@ export function KonnectifyProvider({ children }: { children: React.ReactNode }) 
 
   const loadCachedData = useCallback(async () => {
     // restore config when page is refreshed after installing template
-    const [cachedConnections, cachedTemplates, cachedSetup] =
+    const [cachedConnections, cachedSetup] =
     await Promise.all([
       connectionService.getCached(),
-      workflowService.getTemplates(null),
       tenantService.getSetupProgress(),
     ]);
     
     setConnections(cachedConnections);
     setSetupProgress(cachedSetup);
-    setTemplates(cachedTemplates);
   }, []);
 
   useEffect(() => {
@@ -141,10 +137,6 @@ export function KonnectifyProvider({ children }: { children: React.ReactNode }) 
     setBilling(info);
   }, [client]);
 
-  const refreshTemplates = useCallback(async () => {
-    const list = await workflowService.getTemplates(client);
-    setTemplates(list);
-  }, [client]);
 
   const refreshDashboard = useCallback(async () => {
     if (client) {
@@ -152,7 +144,6 @@ export function KonnectifyProvider({ children }: { children: React.ReactNode }) 
         refreshWorkflows(),
         refreshConnections(),
         refreshBilling(),
-        refreshTemplates(),
       ]);
     }
 
@@ -167,32 +158,8 @@ export function KonnectifyProvider({ children }: { children: React.ReactNode }) 
     setWorkflows(currentWorkflows);
     setConnections(currentConnections);
   
-  }, [client, workflows, connections, billing, refreshWorkflows, refreshConnections, refreshBilling, refreshTemplates]);
-
-  const login = useCallback(
-    async (domain: string, email: string, password: string) => {
-      setLoading(true);
-      setError(null);
-      try {
-        
-        const result = await authService.login(domain, email, password);
-        sessionStorage.setItem("konnectify_session_password", password);
-        setClient(result.client);
-        setAuth(result.auth);
-        setTenant(await tenantService.getTenant());
-        await tenantService.markStepComplete(1);
-        await refreshConnections();
-        const progress = await tenantService.getSetupProgress();
-        setSetupProgress(progress);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Login failed");
-        throw err;
-      } finally {
-        setLoading(false);
-      }
-    },
-    [refreshConnections],
-  );
+  }, [client, workflows, connections, billing, refreshWorkflows, refreshConnections, refreshBilling]);
+  
 
   const registerUser = useCallback(
     async (
@@ -270,14 +237,12 @@ export function KonnectifyProvider({ children }: { children: React.ReactNode }) 
       templates,
       metrics,
       setupProgress,
-      login,
       registerUser,
       logout,
       refreshWorkflows,
       refreshConnections,
       refreshBilling,
       refreshDashboard,
-      refreshTemplates,
       updateSetupProgress,
       ensureToken,
       clearError: () => setError(null),
@@ -295,14 +260,12 @@ export function KonnectifyProvider({ children }: { children: React.ReactNode }) 
       templates,
       metrics,
       setupProgress,
-      login,
       registerUser, 
       logout,
       refreshWorkflows,
       refreshConnections,
       refreshBilling,
       refreshDashboard,
-      refreshTemplates,
       updateSetupProgress,
       ensureToken,
     ],

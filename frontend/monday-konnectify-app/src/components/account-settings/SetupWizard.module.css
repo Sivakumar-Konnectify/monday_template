@@ -627,6 +627,99 @@ body {
   gap: 14px;
 }
 
+.inputWrapper {
+  position: relative; /* only add if not already set */
+}
+
+.passwordToggle {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  color: var(--text-secondary, #676879);
+}
+
+.passwordToggle:hover:not(:disabled) {
+  color: var(--text-primary, #323338);
+}
+
+.passwordToggle:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.templateCountLabel {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0 0 4px 0;
+}
+
+.templateHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.templateList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.templateCheck {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--accent-success);
+  color: white;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.templateBody {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0; /* lets long descriptions wrap instead of overflowing */
+}
+
+.templateCard {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+}
+
+.templateName {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.templateDescription {
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .wizardContainer {

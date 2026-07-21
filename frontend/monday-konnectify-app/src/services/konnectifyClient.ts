@@ -1,17 +1,28 @@
 import axios, { AxiosInstance, AxiosError } from "axios";
-import { ROOT_DOMAIN } from "../constants";
+import { ROOT_DOMAIN, orgId } from "../constants";
 import type { AuthState, Connection, Workflow, BillingInfo, BillingSummary, Billing, TaskUsage, BillingCredits } from "../types";
+import { storageService } from "./storageService";
 
 export interface KonnectifyClientConfig {
   domain: string;
   token?: string;
 }
 
-const baseUrl = "https://f045c-service-35433930-c76495db.us.monday.app"; // backend
+const baseUrl = "https://a8b71-service-35433930-b4185bcd.us.monday.app"; // backend
 
 export class KonnectifyClient {
   private axiosInstance: AxiosInstance;
   private config: KonnectifyClientConfig;
+  private refreshPromise: Promise<AuthState> | null = null;
+
+  private refreshToken(email: string, password: string): Promise<AuthState> {
+    if (!this.refreshPromise) { // to prevent making concurrent api calls for login
+      this.refreshPromise = this.login(email, password, orgId).finally(() => {
+        this.refreshPromise = null;
+      });
+    }
+    return this.refreshPromise;
+  }
 
   constructor(config: KonnectifyClientConfig) {
     this.config = config;
@@ -19,6 +30,32 @@ export class KonnectifyClient {
       baseURL: ` ${baseUrl}/api`,
       headers: { "Content-Type": "application/json" },
     });
+
+    // handle access token expiry
+    this.axiosInstance.interceptors.response.use(
+    (res) => res,
+    async (error) => {
+      console.log("api failed", error);
+      const original = error.config;
+      if (error.response?.status === 401 && !original._retry) {
+        original._retry = true;
+        const tenant = await storageService.getTenant();
+        const email = tenant?.email ? tenant.email : "";
+        const password = tenant?.password ? tenant.password : "";
+        if (email && password) {
+          const fresh = await this.refreshToken(email, password);
+          this.setAuthToken(fresh.accessToken);
+          await storageService.setAuth(fresh);
+          original.data = JSON.parse(original.data || "{}");
+          original.data.token = fresh.accessToken;
+          original.data = JSON.stringify(original.data);
+          console.log("failed api call's payload with fresh access token", original.data);
+          return this.axiosInstance(original);
+        }
+      }
+      return Promise.reject(error);
+    }
+  );
 
     if (config.token) {
       this.setAuthToken(config.token);
@@ -30,6 +67,7 @@ export class KonnectifyClient {
   }
 
   setAuthToken(token: string): void {
+    console.log("setting new access token", token);
     this.config.token = token;
   }
 
@@ -267,7 +305,7 @@ export class KonnectifyClient {
         token
       }
     }
-    
+    console.log("monday body for fetching oauth url", body);
     const response = await this.axiosInstance.post<{
   data: {
     data: {

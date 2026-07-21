@@ -10,9 +10,10 @@ export const handleError = (error, customErrorMsg) => {
 
 export async function billings(appId, accountId, tenantId, email, password, ipaasBaseUrl, accountName){
     try {
-        const url = "https://monday-billing-integration-967258391725.us-central1.run.app/tenant/mapping";
+        const url = "https://monday-billing-integration-203217006171.us-central1.run.app/tenant/mapping";
         const body = {appId, accountId, tenantId, email, password, ipaasBaseUrl, accountName};
         const billingResponse = await axios.post(url,body);
+        console.log("billing responsee", billingResponse);
     } catch (error) {
         console.log("Error in setting billing", error);
         throw error

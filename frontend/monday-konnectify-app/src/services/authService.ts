@@ -33,31 +33,6 @@ export class AuthService {
     }
   }
 
-  async login(
-    domain: string,
-    email: string,
-    password: string,
-  ): Promise<{ client: KonnectifyClient; auth: AuthState }> {
-    const orgId = "4";
-    const projectId = "4";
-    const tempClient = new KonnectifyClient({ domain });
-
-    try {
-      // Login — returns the long-lived service accessToken for API calls.
-      const serviceAuth = await tempClient.login(email, password, orgId);
-
-      await this.storage.setTenant({ domain, orgId, projectId });
-      await this.storage.setAuth(serviceAuth);
-      // Persist password so ensureToken can mint fresh bootstrap tokens on demand.
-      await this.storage.setSessionPassword(password);
-
-      const client = new KonnectifyClient({ domain, token: serviceAuth.accessToken });
-      return { client, auth: serviceAuth };
-    } catch (error) {
-      return tempClient.handleError("login", error);
-    }
-  }
-
   async logout(client: KonnectifyClient | null): Promise<void> {
     if (client) {
       await client.logout();

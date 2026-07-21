@@ -57,11 +57,15 @@ export const projectId = "27" as const;
 
 export const WORKFLOW_TEMPLATES = [
   {
-    id: 4,
-    name: "Subscription Sync",
+    name: "Create Deal for New Chargebee Subscription",
     description:
-      "Syncs newly created subscription to Monday",
-  }
+      "When a subscription is created in Chargebee, create or find the contact in Monday and add the subscription to the Deals group.",
+  },
+  {
+    name: "Mark Deal as Churn on Chargebee Subscription Cancellation",
+    description:
+      "When a subscription is canceled in Chargebee, update the corresponding deal in Monday to Lost or Churned.",
+  },
 ] as const;
 
 export const ACCOUNT_SETTINGS_SECTIONS = [
