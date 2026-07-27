@@ -5,8 +5,10 @@ import { iframeService } from "../../services/iframeService";
 import { workflowService } from "../../services/workflowService";
 import { EmptyPlaceholder } from "../common/EmptyPlaceholder";
 import { useToast } from "../common/useToast";
+import mondaySdk from "monday-sdk-js";
 import type { IframeDestination, Workflow } from "../../types";
 import styles from "./WorkflowTable.module.css";
+const monday = mondaySdk();
 
 type ActionType = IframeDestination["type"];
 
@@ -49,6 +51,7 @@ export const WorkflowTable: React.FC = () => {
   const filtered = useMemo(() => {
     const term = search.toLowerCase();
     if (!term) return workflows;
+    monday.execute('valueCreatedForUser'); // for searching
     return workflows.filter(
       (w) =>
         w.name.toLowerCase().includes(term) ||
@@ -184,7 +187,7 @@ export const WorkflowTable: React.FC = () => {
           />
         </div>
         {listLoading && <Loader size="small" />}
-        <Button kind="primary" size="small" onClick={() => void openDetail(null, "create")}>
+        <Button kind="primary" size="small" onClick={() => {void openDetail(null, "create");monday.execute('valueCreatedForUser');}}>
           + Create Konnector
         </Button>
       </div>
@@ -285,8 +288,8 @@ const WorkflowRow: React.FC<WorkflowRowProps> = ({ workflow, toggling, onToggle,
 
       {/* Actions — shown on row hover */}
       <div className={styles.rowActions}>
-        <Button kind="tertiary" size="small" onClick={() => onOpen("view")}>View</Button>
-        <Button kind="tertiary" size="small" onClick={() => onOpen("edit")}>Edit</Button>
+        <Button kind="tertiary" size="small" onClick={() => {onOpen("view"); monday.execute('valueCreatedForUser');}}>View</Button>
+        <Button kind="tertiary" size="small" onClick={() => {onOpen("edit");monday.execute('valueCreatedForUser');}}>Edit</Button>
       </div>
     </div>
   );

@@ -8,7 +8,7 @@ export interface KonnectifyClientConfig {
   token?: string;
 }
 
-const baseUrl = "https://a8b71-service-35433930-b4185bcd.us.monday.app"; // backend
+const baseUrl = "https://c356e-service-35433930-c76495db.us.monday.app"; // backend
 
 export class KonnectifyClient {
   private axiosInstance: AxiosInstance;
@@ -49,7 +49,6 @@ export class KonnectifyClient {
           original.data = JSON.parse(original.data || "{}");
           original.data.token = fresh.accessToken;
           original.data = JSON.stringify(original.data);
-          console.log("failed api call's payload with fresh access token", original.data);
           return this.axiosInstance(original);
         }
       }
@@ -67,7 +66,6 @@ export class KonnectifyClient {
   }
 
   setAuthToken(token: string): void {
-    console.log("setting new access token", token);
     this.config.token = token;
   }
 
@@ -305,7 +303,6 @@ export class KonnectifyClient {
         token
       }
     }
-    console.log("monday body for fetching oauth url", body);
     const response = await this.axiosInstance.post<{
   data: {
     data: {
