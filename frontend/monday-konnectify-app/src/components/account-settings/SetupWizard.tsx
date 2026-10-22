@@ -34,7 +34,7 @@ type Step = "auth" | "monday" | typeof SECONDARY_APP.key | "templates";
 
 const STEPS: Array<{ id: Step; label: string }> = [
   { id: "auth", label: "Sign Up" },
-  { id: "monday", label: "Connect Monday" },
+  { id: "monday", label: "Connect monday" },
   { id: SECONDARY_APP.key, label: SECONDARY_APP.stepLabel },
   { id: "templates", label: "Install Templates" },
 ];
@@ -429,7 +429,7 @@ export const SetupWizard: React.FC = () => {
       const oauthUrlResponse = await connectionService.getOAuthUrl(
         client,
         APP_IDS.monday,
-        "Monday Connection",
+        "monday Connection",
         isEditingConnection,
       );
       const win = window.open(
@@ -452,7 +452,7 @@ export const SetupWizard: React.FC = () => {
     } catch (err) {
       markError(
         "monday",
-        err instanceof Error ? err.message : "Failed to connect Monday",
+        err instanceof Error ? err.message : "Failed to connect monday",
       );
       setSubmitting(false);
     }
@@ -641,10 +641,10 @@ const AuthStep: React.FC<AuthStepProps> = ({
   return (
     <div className={styles.stepPanel}>
       <div className={styles.panelHeader}>
-        <h2 className={styles.panelTitle}> "Create Account" </h2>
+        <h2 className={styles.panelTitle}> Create Account </h2>
         <p className={styles.panelSubtitle}>
           {" "}
-          "Set up your Konnectify workspace"{" "}
+          Set up your Konnectify workspace{" "}
         </p>
       </div>
 
@@ -793,9 +793,9 @@ const MondayStep: React.FC<MondayStepProps> = ({
   return (
     <div className={styles.stepPanel}>
       <div className={styles.panelHeader}>
-        <h2 className={styles.panelTitle}>Connect Monday</h2>
+        <h2 className={styles.panelTitle}>Connect monday</h2>
         <p className={styles.panelSubtitle}>
-          Click on Connect Monday button to link your account
+          Click on Connect monday button to link your account
         </p>
       </div>
 
@@ -814,7 +814,7 @@ const MondayStep: React.FC<MondayStepProps> = ({
           disabled={submitting || isMondayConnected}
           style={{ width: "100%", marginTop: 8 }}
         >
-          {isMondayConnected ? "Connected with Monday" : "Connect Monday"}
+          {isMondayConnected ? "Connected with monday" : "Connect monday"}
         </Button>
       </form>
     </div>
@@ -1022,8 +1022,8 @@ const CompleteStep: React.FC = () => {
         setIsConnected(true);
         const oauthButton = document.getElementById("mondayOauthButton");
         const currentStatus = oauthButton?.innerText;
-        if (currentStatus === "Connect Monday" && oauthButton) {
-          oauthButton.innerText = "Disconnect Monday";
+        if (currentStatus === "Connect monday" && oauthButton) {
+          oauthButton.innerText = "Disconnect monday";
         }
       }
       await refreshConnections();
@@ -1069,7 +1069,7 @@ const CompleteStep: React.FC = () => {
         <MondayEditCard
           connection={mondayConn}
           appId={APP_IDS.monday}
-          connectionName="Monday Connection"
+          connectionName="monday Connection"
           client={client}
           onSaved={() => void refreshConnections()}
           editOauthRef={editOauthWindowRef}

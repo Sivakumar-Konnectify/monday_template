@@ -21,9 +21,14 @@ export const EventLogsPanel: React.FC = () => {
       setLoading(true);
       try {
         const token = await ensureToken();
-        const url = iframeService.buildBootstrapUrl(tenant.domain, "/iframe-event-logs", token);
+        const url = iframeService.buildBootstrapUrl(
+          tenant.domain,
+          "/iframe-event-logs",
+          token,
+        );
         setIframeUrl(url);
-        monday.execute('valueCreatedForUser');
+        console.log("Logs iframe url : ", url);
+        monday.execute("valueCreatedForUser");
       } catch (err) {
         // ignore: will show empty state
       } finally {
@@ -50,10 +55,17 @@ export const EventLogsPanel: React.FC = () => {
         </div>
       )}
       {!loading && iframeUrl && (
-        <iframe className={styles.iframeFull} src={iframeUrl} title="Event Logs" />
+        <iframe
+          className={styles.iframeFull}
+          src={iframeUrl}
+          title="Event Logs"
+        />
       )}
       {!loading && !iframeUrl && (
-        <EmptyPlaceholder title="No event logs" description="No event logs available." />
+        <EmptyPlaceholder
+          title="No event logs"
+          description="No event logs available."
+        />
       )}
     </div>
   );

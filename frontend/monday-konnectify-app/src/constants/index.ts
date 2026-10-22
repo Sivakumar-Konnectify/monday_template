@@ -47,7 +47,7 @@ export const SECONDARY_APP = {
   apiKeyHelpText: "Find your API key in Chargebee → Settings → API Settings",
 
   // TemplatesStep bullet copy
-  templateDescription: "Chargebee ↔ Monday contacts",
+  templateDescription: "Chargebee ↔ monday contacts",
 } as const;
 
 export const templateFolderId = 3 as const;
@@ -59,12 +59,12 @@ export const WORKFLOW_TEMPLATES = [
   {
     name: "Create Deal for New Chargebee Subscription",
     description:
-      "When a subscription is created in Chargebee, create or find the contact in Monday and add the subscription to the Deals group.",
+      "When a subscription is created in Chargebee, create or find the contact in monday and add the subscription to the Deals group.",
   },
   {
     name: "Mark Deal as Churn on Chargebee Subscription Cancellation",
     description:
-      "When a subscription is canceled in Chargebee, update the corresponding deal in Monday to Lost or Churned.",
+      "When a subscription is canceled in Chargebee, update the corresponding deal in monday to Lost or Churned.",
   },
 ] as const;
 
